@@ -44,7 +44,7 @@ impl VpnDevice {
             config.packet_information(true);
         });
 
-        let mut interface = tun::create(&config).unwrap();
+        let interface = tun::create(&config).unwrap();
 
         Self {
             socket,
