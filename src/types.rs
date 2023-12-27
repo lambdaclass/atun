@@ -41,8 +41,8 @@ impl VpnDevice {
     pub fn new(peer: Peer) -> Self {
         let mut config = tun::Configuration::default();
         config
-            .address((10, 0, 0, 1))
-            .netmask((255, 255, 255, 0))
+            // .address((10, 0, 0, 1))
+            // .netmask((255, 255, 255, 0))
             .name("utun5")
             .up();
 
@@ -69,6 +69,7 @@ impl VpnDevice {
             let peer = &self.peer.endpoint();
 
             if let Some(peer_addr) = peer.as_ref() {
+                println!("BYTES: {:?}", &buf[..nbytes]);
                 self.socket.send_to(&buf[..nbytes], peer_addr)?;
             } else {
                 eprintln!("..no peer");
@@ -83,6 +84,7 @@ impl VpnDevice {
             let (nbytes, peer_addr) = self.socket.recv_from(&mut buf[..])?;
 
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
+                println!("Peer connected with address {}", peer_addr_v4);
                 if &buf[..nbytes] == b"hello?" {
                     eprintln!("\"handshake\" received");
                     self.peer.set_endpoint(peer_addr_v4);
