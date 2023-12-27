@@ -1,7 +1,7 @@
 #!/bin/bash
 
 setcap cap_net_admin=eip ./atun
-./atun --peer 172.18.0.2:19988 &
+./atun --peer 172.19.0.2:19988 &
 
 pid=$!
 

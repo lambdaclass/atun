@@ -54,7 +54,7 @@ impl VpnDevice {
         let interface = tun::create(&config).unwrap();
 
         Self {
-            socket: UdpSocket::bind("127.0.0.1:19988").expect("port is already in use"),
+            socket: UdpSocket::bind("0.0.0.0:19988").expect("port is already in use"),
             interface,
             peer,
         }
@@ -70,7 +70,7 @@ impl VpnDevice {
 
             let nbytes = self.interface.read(&mut buf[..])?;
 
-            let peer = &self.peer.endpoint();
+            //let peer = &self.peer.endpoint();
             println!("post conexion {:?}", peer);
 
             if let Some(peer_addr) = peer.as_ref() {
