@@ -1,6 +1,6 @@
 #!/bin/bash
 
-setcap 'cap_net_admin=eip'  ./atun
+setcap 'cap_net_admin=eip' ./atun
 
 ./atun &
 
