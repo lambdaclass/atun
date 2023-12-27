@@ -4,7 +4,7 @@ RUN apt update
 
 RUN apt install -y iproute2 libcap2-bin netcat
 
-COPY target/release/wontun /wontun 
+COPY target/debug/atun /atun 
 
 COPY scripts/run_server.sh /run_server.sh
 

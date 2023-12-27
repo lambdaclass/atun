@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# sudo setcap cap_net_admin=eip target/release/wontun
+sudo setcap cap_net_admin=eip target/debug/atun
 
 target/release/atun --peer 172.18.0.2:19988 &
 
