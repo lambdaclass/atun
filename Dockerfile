@@ -10,8 +10,8 @@ RUN cargo install --path .
 RUN cargo build --release
 
 FROM ubuntu
-RUN apt-get update && apt-get install -y extra-runtime-dependencies
-COPY --from=builder /usr/src/myapp/target/release/atun /usr/local/bin/atun
+RUN apt-get install libcap2-bin
+COPY --from=builder /usr/src/myapp/target/release/atun /atun
 COPY scripts/run_server.sh /run_server.sh
 
 # Run the application
