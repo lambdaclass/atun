@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         let peer_address_result = args.peer.unwrap().parse::<SocketAddr>();
     
-        if let Ok(peer_address) = peer_address_result {
+        if let Ok(_peer_address) = peer_address_result {
 
         } else {
             println!("Couldn't decode peer address");
