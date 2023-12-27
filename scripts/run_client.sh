@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# FIXME: Instead of setting these capabilities, we are going to run the script with sudo. 
 setcap cap_net_admin=eip ./atun
 ./atun --peer 172.18.0.2:19988 &
 

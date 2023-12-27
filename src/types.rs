@@ -54,7 +54,7 @@ impl VpnDevice {
         let interface = tun::create(&config).unwrap();
 
         Self {
-            socket: UdpSocket::bind("127.0.0.1:19288").expect("port is already in use"),
+            socket: UdpSocket::bind("127.0.0.1:19988").expect("port is already in use"),
             interface,
             peer,
         }
@@ -65,14 +65,20 @@ impl VpnDevice {
         let mut buf = [0u8; 1504];
 
         loop {
-            let nbytes = self.interface.read(&mut buf[..])?;
             let peer = &self.peer.endpoint();
+            println!("pre conexion {:?}", peer);
+
+            let nbytes = self.interface.read(&mut buf[..])?;
+
+            let peer = &self.peer.endpoint();
+            println!("post conexion {:?}", peer);
 
             if let Some(peer_addr) = peer.as_ref() {
+                println!("PEER ADDR: {}", peer_addr);
                 println!("BYTES: {:?}", &buf[..nbytes]);
                 self.socket.send_to(&buf[..nbytes], peer_addr)?;
             } else {
-                eprintln!("..no peer");
+                println!("..no peer");
             }
         }
     }
@@ -86,7 +92,7 @@ impl VpnDevice {
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
                 println!("Peer connected with address {}", peer_addr_v4);
                 if &buf[..nbytes] == b"hello?" {
-                    eprintln!("\"handshake\" received");
+                    println!("\"handshake\" received");
                     self.peer.set_endpoint(peer_addr_v4);
                     continue;
                 }

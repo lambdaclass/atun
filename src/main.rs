@@ -66,6 +66,8 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
             }
         });
 
+    println!("PEER: {:?}", peer);
+
     let peer = Peer::new(peer);
     let dev = VpnDevice::new(peer);
 
