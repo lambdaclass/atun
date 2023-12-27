@@ -62,7 +62,7 @@ impl VpnDevice {
             let peer = &self.peer.endpoint();
 
             if let Some(peer_addr) = peer.as_ref() {
-                self.udp.send_to(&buf[..nbytes], peer_addr)?;
+                self.socket.send_to(&buf[..nbytes], peer_addr)?;
             } else {
                 eprintln!("..no peer");
             }
@@ -73,7 +73,7 @@ impl VpnDevice {
         let mut buf = [0u8; 1504];
 
         loop {
-            let (nbytes, peer_addr) = self.udp.recv_from(&mut buf[..])?;
+            let (nbytes, peer_addr) = self.socket.recv_from(&mut buf[..])?;
 
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
                 if &buf[..nbytes] == b"hello?" {
