@@ -1,5 +1,7 @@
 use std::io::Read;
 
+use pktparse::{ethernet, ipv4};
+
 extern crate tun;
 
 fn main() {
@@ -18,6 +20,9 @@ fn main() {
 
 	loop {
 		let amount = dev.read(&mut buf).unwrap();
-		println!("{:?}", &buf[0 .. amount]);
+        if let Ok((remaining, header)) = ipv4::parse_ipv4_header(&buf) {
+        println!("{}", header.source_addr);
+        }
+		//println!("{:?}", &buf[0 .. amount]);
 	}
 }

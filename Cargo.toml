@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 tun = { version = "0.6.1", features = ["async"] }
+pktparse = "*"
