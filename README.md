@@ -11,3 +11,9 @@ sudo /target/debug/atun
 sudo route -n add -net 10.0.0.0/24 10.0.0.1
 ping 10.0.0.1
 ```
+
+# Setting the Docker server
+```
+docker build --tag atun-server .
+docker run -it --name atun atun-server
+```
