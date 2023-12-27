@@ -3,7 +3,7 @@
 setcap 'cap_net_admin=eip' ./atun
 
 ./atun &
-
+sleep 4
 pid=$!
 
 ip addr add 10.8.0.1/24 dev atun0

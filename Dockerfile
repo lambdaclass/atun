@@ -7,9 +7,10 @@ RUN cargo clean
 
 RUN cargo build --release 
 
-FROM ubuntu
-RUN apt-get install libcap2-bin
-COPY --from=builder /usr/src/myapp/target/release/atun /atun
+FROM ubuntu:22.04
+RUN apt-get update -y
+RUN apt-get install libcap2-bin iproute2 libcap2-bin netcat -y
+COPY --from=builder /target/release/atun /atun
 COPY scripts/run_server.sh /run_server.sh
 
 CMD ["bash", "/run_server.sh"]
