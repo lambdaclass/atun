@@ -11,7 +11,6 @@ pid=$!
 # sudo ip link set up dev tun0
 # sudo ip link set dev tun0 mtu 1400
 
-
 trap "kill $pid" INT TERM
 
 wait $pid

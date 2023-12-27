@@ -25,13 +25,34 @@ impl Peer {
 
 /// A representation of a VPN interface
 pub struct VpnDevice {
-    udp: UdpSocket,
+    socket: UdpSocket,
     /// tun device
     interface: Device,
     peer: Peer,
 }
 
 impl VpnDevice {
+    fn new(peer: Peer, socket: UdpSocket) -> Self {
+        let mut config = tun::Configuration::default();
+        config
+            .address((10, 0, 0, 1))
+            .netmask((255, 255, 255, 0))
+            .up();
+
+        #[cfg(target_os = "linux")]
+        config.platform(|config| {
+            config.packet_information(true);
+        });
+
+        let mut interface = tun::create(&config).unwrap();
+
+        Self {
+            socket,
+            interface,
+            peer,
+        }
+    }
+
     fn loop_listen_iface(&mut self) -> io::Result<()> {
         // a large enough buffer, recall the MTU on iface was to be set to 1472
         let mut buf = [0u8; 1504];
