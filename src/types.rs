@@ -43,7 +43,7 @@ impl VpnDevice {
         config
             .address((10, 0, 0, 1))
             .netmask((255, 255, 255, 0))
-            .name("atun0")
+            .name("utun5")
             .up();
 
         #[cfg(target_os = "linux")]
