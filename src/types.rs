@@ -10,11 +10,17 @@ pub struct Peer {
 }
 
 impl Peer {
-    fn endpoint(&self) -> MutexGuard<Option<SocketAddrV4>> {
+    pub fn new(socket: Option<SocketAddrV4>) -> Self {
+        Self {
+            endpoint: Mutex::new(socket),
+        }
+    }
+
+    pub fn endpoint(&self) -> MutexGuard<Option<SocketAddrV4>> {
         self.endpoint.lock().unwrap()
     }
 
-    fn set_endpoint(&self, addr: SocketAddrV4) {
+    pub fn set_endpoint(&self, addr: SocketAddrV4) {
         let mut endpoint = self.endpoint.lock().unwrap();
 
         if endpoint.is_none() {
@@ -32,7 +38,7 @@ pub struct VpnDevice {
 }
 
 impl VpnDevice {
-    fn new(peer: Peer, socket: UdpSocket) -> Self {
+    pub fn new(peer: Peer) -> Self {
         let mut config = tun::Configuration::default();
         config
             .address((10, 0, 0, 1))
@@ -44,16 +50,16 @@ impl VpnDevice {
             config.packet_information(true);
         });
 
-        let mut interface = tun::create(&config).unwrap();
+        let interface = tun::create(&config).unwrap();
 
         Self {
-            socket,
+            socket: UdpSocket::bind("127.0.0.1:19288").expect("port is already in use"),
             interface,
             peer,
         }
     }
 
-    fn loop_listen_iface(&mut self) -> io::Result<()> {
+    pub fn loop_listen_iface(&mut self) -> io::Result<()> {
         // a large enough buffer, recall the MTU on iface was to be set to 1472
         let mut buf = [0u8; 1504];
 
@@ -69,7 +75,7 @@ impl VpnDevice {
         }
     }
 
-    fn loop_listen_udp(&mut self) -> io::Result<()> {
+    pub fn loop_listen_udp(&mut self) -> io::Result<()> {
         let mut buf = [0u8; 1504];
 
         loop {
