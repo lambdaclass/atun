@@ -68,14 +68,14 @@ impl VpnDevice {
             let peer = &self.peer.endpoint();
 
             let nbytes = self.interface.read(&mut buf[..])?;
-            println!("BYTES: {:?}", buf);
+            // println!("BYTES: {:?}", buf);
 
-            match String::from_utf8(buf.to_vec()) {
-                Ok(value) => {
-                    println!("BYTES AS STRING: {}", value);
-                }
-                Err(_) => {}
-            }
+            // match String::from_utf8(buf.to_vec()) {
+            //     Ok(value) => {
+            //         println!("BYTES AS STRING: {}", value);
+            //     }
+            //     Err(_) => {}
+            // }
 
             //let peer = &self.peer.endpoint();
 
@@ -84,7 +84,7 @@ impl VpnDevice {
                 // println!("BYTES: {:?}", &buf[..nbytes]);
                 self.socket.send_to(&buf[..nbytes], peer_addr)?;
             } else {
-                println!("..no peer");
+                // println!("..no peer");
             }
         }
     }
