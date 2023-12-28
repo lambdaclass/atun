@@ -91,7 +91,7 @@ impl VpnDevice {
 
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
                 println!("Peer connected with address {}", peer_addr_v4);
-                if &buf[..nbytes] == b"hello?" {
+                if is_subsequence(b"hello?", &buf[..nbytes]) {
                     println!("\"handshake\" received");
                     self.peer.set_endpoint(peer_addr_v4);
                     continue;
@@ -100,4 +100,17 @@ impl VpnDevice {
             }
         }
     }
+}
+
+
+
+pub fn is_subsequence<T: PartialEq>(subsequence: &[T], mut sequence: &[T]) -> bool {
+    for search in subsequence {
+        if let Some(index) = sequence.iter().position(|element| search == element) {
+            sequence = &sequence[index + 1..];
+        } else {
+            return false;
+        }
+    }
+    true
 }
