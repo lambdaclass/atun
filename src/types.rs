@@ -65,13 +65,8 @@ impl VpnDevice {
         let mut buf = [0u8; 1504];
 
         loop {
-            let peer = &self.peer.endpoint();
-            println!("pre conexion {:?}", peer);
-
             let nbytes = self.interface.read(&mut buf[..])?;
-
-            //let peer = &self.peer.endpoint();
-            println!("post conexion {:?}", peer);
+            let peer = &self.peer.endpoint();
 
             if let Some(peer_addr) = peer.as_ref() {
                 println!("PEER ADDR: {}", peer_addr);
