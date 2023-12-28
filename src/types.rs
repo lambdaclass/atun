@@ -68,12 +68,7 @@ impl VpnDevice {
 
         loop {
             let peer = &self.peer.endpoint();
-            println!("pre conexion {:?}", peer);
-
             let nbytes = self.interface_reader.write().unwrap().read(&mut buf[..])?;
-
-            //let peer = &self.peer.endpoint();
-            println!("post conexion {:?}", peer);
 
             if let Some(peer_addr) = peer.as_ref() {
                 println!("PEER ADDR: {}", peer_addr);
