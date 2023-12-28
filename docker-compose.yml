@@ -1,0 +1,22 @@
+networks:
+  frontend:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
+services:
+  atun-server: 
+    privileged: true
+    container_name: atun-server
+    image: atun-server
+    networks:
+      frontend:
+        ipv4_address: 172.19.0.2
+
+  atun-client:
+    container_name: atun-client
+    privileged: true
+    image: atun-client
+    networks:
+      frontend:
+        ipv4_address: 172.19.0.3
