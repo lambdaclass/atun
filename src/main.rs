@@ -76,13 +76,13 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
 
     let join_handle_1 = std::thread::spawn(move || {
         if let Err(err) = (*dev1).lock().unwrap().loop_listen_iface() {
-            eprintln!("err loop 1: {:?}", err);
+            println!("err loop 1: {:?}", err);
         }
     });
 
     let join_handle_2 = std::thread::spawn(move || {
         if let Err(err) = (*dev2).lock().unwrap().loop_listen_udp() {
-            eprintln!("err loop 2: {:?}", err);
+            println!("err loop 2: {:?}", err);
         }
     });
 
