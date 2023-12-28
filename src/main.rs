@@ -74,11 +74,11 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
     let dev1 = Arc::new(Mutex::new(dev));
     let dev2 = Arc::clone(&dev1);
 
-    let join_handle_1 = std::thread::spawn(move || {
-        if let Err(err) = (*dev1).lock().unwrap().loop_listen_iface() {
-            println!("err loop 1: {:?}", err);
-        }
-    });
+    // let join_handle_1 = std::thread::spawn(move || {
+    //     if let Err(err) = (*dev1).lock().unwrap().loop_listen_iface() {
+    //         println!("err loop 1: {:?}", err);
+    //     }
+    // });
 
     let join_handle_2 = std::thread::spawn(move || {
         if let Err(err) = (*dev2).lock().unwrap().loop_listen_udp() {
@@ -86,7 +86,7 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
         }
     });
 
-    join_handle_1.join().unwrap();
+    // join_handle_1.join().unwrap();
     join_handle_2.join().unwrap();
 
     Ok(())
