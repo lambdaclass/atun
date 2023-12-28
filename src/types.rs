@@ -80,8 +80,6 @@ impl VpnDevice {
             let nbytes = self.interface_reader.write().unwrap().read(&mut buf[..])?;
 
             if let Some(peer_addr) = peer.as_ref() {
-                println!("PEER ADDR: {}", peer_addr);
-                println!("BYTES: {:?}", &buf[..nbytes]);
                 self.socket.send_to(&buf[..nbytes], peer_addr)?;
             } else {
                 println!("..no peer");
@@ -96,7 +94,7 @@ impl VpnDevice {
             let (nbytes, peer_addr) = self.socket.recv_from(&mut buf[..])?;
 
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
-                println!("Peer connected with address {}", peer_addr_v4);
+                // FIXME: Better check of the handshake
                 if contains_sequence(&buf[..nbytes], b"hello?") {
                     println!("\"handshake\" received");
                     self.peer.set_endpoint(peer_addr_v4);

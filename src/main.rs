@@ -36,7 +36,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         let peer_address_result = args.peer.clone().unwrap().parse::<SocketAddr>();
 
-        if let Ok(_peer_address) = peer_address_result {
+        if let Ok(peer_address) = peer_address_result {
+            println!("Starting in client mode - Connected to server {peer_address}");
         } else {
             println!("Couldn't decode peer address");
             println!("Remember to add a port to the ip, for example: 127.0.0.1:8080");
@@ -60,8 +61,6 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
                 None
             }
         });
-
-    println!("PEER: {:?}", peer);
 
     let peer = Peer::new(peer);
     let dev = VpnDevice::new(peer);
