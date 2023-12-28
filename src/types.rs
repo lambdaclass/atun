@@ -1,9 +1,9 @@
 use std::{
     io::{self, Read, Write},
     net::{SocketAddr, SocketAddrV4, UdpSocket},
-    sync::{Mutex, MutexGuard},
+    sync::{Mutex, RwLock},
 };
-use tun::platform::Device;
+use tun::platform::posix::{Reader, Writer};
 
 pub struct Peer {
     endpoint: Mutex<Option<SocketAddrV4>>,
@@ -16,8 +16,8 @@ impl Peer {
         }
     }
 
-    pub fn endpoint(&self) -> MutexGuard<Option<SocketAddrV4>> {
-        self.endpoint.lock().unwrap()
+    pub fn endpoint(&self) -> Option<SocketAddrV4> {
+        self.endpoint.lock().unwrap().clone()
     }
 
     pub fn set_endpoint(&self, addr: SocketAddrV4) {
@@ -33,7 +33,8 @@ impl Peer {
 pub struct VpnDevice {
     socket: UdpSocket,
     /// tun device
-    interface: Device,
+    interface_reader: RwLock<Reader>,
+    interface_writer: RwLock<Writer>,
     peer: Peer,
 }
 
@@ -43,8 +44,7 @@ impl VpnDevice {
         config
             // .address((10, 0, 0, 1))
             // .netmask((255, 255, 255, 0))
-            .name("utun5")
-            .up();
+            .name("utun5");
 
         #[cfg(target_os = "linux")]
         config.platform(|config| {
@@ -52,15 +52,17 @@ impl VpnDevice {
         });
 
         let interface = tun::create(&config).unwrap();
+        let (interface_reader, interface_writer) = interface.split();
 
         Self {
             socket: UdpSocket::bind("0.0.0.0:19988").expect("port is already in use"),
-            interface,
+            interface_reader: RwLock::new(interface_reader),
+            interface_writer: RwLock::new(interface_writer),
             peer,
         }
     }
 
-    pub fn loop_listen_iface(&mut self) -> io::Result<()> {
+    pub fn loop_listen_iface(&self) -> io::Result<()> {
         // a large enough buffer, recall the MTU on iface was to be set to 1472
         let mut buf = [0u8; 1504];
 
@@ -68,7 +70,7 @@ impl VpnDevice {
             let peer = &self.peer.endpoint();
             println!("pre conexion {:?}", peer);
 
-            let nbytes = self.interface.read(&mut buf[..])?;
+            let nbytes = self.interface_reader.write().unwrap().read(&mut buf[..])?;
 
             //let peer = &self.peer.endpoint();
             println!("post conexion {:?}", peer);
@@ -83,7 +85,7 @@ impl VpnDevice {
         }
     }
 
-    pub fn loop_listen_udp(&mut self) -> io::Result<()> {
+    pub fn loop_listen_udp(&self) -> io::Result<()> {
         let mut buf = [0u8; 1504];
 
         loop {
@@ -96,7 +98,10 @@ impl VpnDevice {
                     self.peer.set_endpoint(peer_addr_v4);
                     continue;
                 }
-                self.interface.write(&buf[..nbytes])?;
+                self.interface_writer
+                    .write()
+                    .unwrap()
+                    .write(&buf[..nbytes])?;
             }
         }
     }

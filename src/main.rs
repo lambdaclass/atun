@@ -1,10 +1,5 @@
 use clap::{arg, Parser};
-use std::{
-    io,
-    net::SocketAddr,
-    ops::Deref,
-    sync::{Arc, Mutex},
-};
+use std::{io, net::SocketAddr, sync::Arc};
 use types::{Peer, VpnDevice};
 mod types;
 extern crate tun;
@@ -71,17 +66,17 @@ fn run(peer_addr: Option<&str>) -> io::Result<()> {
     let peer = Peer::new(peer);
     let dev = VpnDevice::new(peer);
 
-    let dev1 = Arc::new(Mutex::new(dev));
+    let dev1 = Arc::new(dev);
     let dev2 = Arc::clone(&dev1);
 
     let join_handle_1 = std::thread::spawn(move || {
-        if let Err(err) = (*dev1).lock().unwrap().loop_listen_iface() {
+        if let Err(err) = (*dev1).loop_listen_iface() {
             eprintln!("err loop 1: {:?}", err);
         }
     });
 
     let join_handle_2 = std::thread::spawn(move || {
-        if let Err(err) = (*dev2).lock().unwrap().loop_listen_udp() {
+        if let Err(err) = (*dev2).loop_listen_udp() {
             eprintln!("err loop 2: {:?}", err);
         }
     });
