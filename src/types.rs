@@ -41,10 +41,19 @@ pub struct VpnDevice {
 impl VpnDevice {
     pub fn new(peer: Peer) -> Self {
         let mut config = tun::Configuration::default();
+
+        let dev_addr = if peer.endpoint().is_some() {
+            (10, 8, 0, 3)
+        } else {
+            (10, 8, 0, 1)
+        };
+
         config
-            // .address((10, 0, 0, 1))
-            // .netmask((255, 255, 255, 0))
-            .name("utun5");
+            .address(dev_addr)
+            .netmask((255, 255, 255, 0))
+            .name("utun5")
+            .mtu(1400)
+            .up();
 
         #[cfg(target_os = "linux")]
         config.platform(|config| {

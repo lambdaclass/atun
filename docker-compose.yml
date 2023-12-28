@@ -12,6 +12,7 @@ services:
     networks:
       frontend:
         ipv4_address: 172.19.0.2
+    command: ./atun
 
   atun-client:
     container_name: atun-client
@@ -20,3 +21,4 @@ services:
     networks:
       frontend:
         ipv4_address: 172.19.0.3
+    command: bash -c "./atun --peer 172.19.0.2:19988"

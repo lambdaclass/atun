@@ -2,7 +2,7 @@ FROM rust:1.72 as builder
 
 COPY . .
 
-COPY scripts/run_server.sh /run_server.sh
+# COPY scripts/run_server.sh /run_server.sh
 RUN cargo clean 
 
 RUN cargo build --release 
@@ -10,8 +10,9 @@ RUN cargo build --release
 FROM ubuntu:22.04
 RUN apt-get update -y
 RUN apt-get install libcap2-bin iproute2 libcap2-bin netcat -y
-COPY --from=builder /target/release/atun /atun
-COPY scripts/run_client.sh /run_client.sh
+COPY --from=builder /target/release/atun ./atun
+# COPY scripts/run_client.sh /run_client.sh
 
-CMD ["bash", "/run_client.sh"]
+CMD ["bash"]
+# ENTRYPOINT ["bash"] 
 
