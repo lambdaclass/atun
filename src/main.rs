@@ -3,6 +3,7 @@ use std::{io, net::SocketAddr, sync::Arc};
 use types::{Peer, VpnDevice};
 mod types;
 extern crate tun;
+use colored::*;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug, Clone)]
@@ -16,7 +17,7 @@ struct Args {
 
 fn print_banner() {
     println!("Atun ready to swim ");
-    println!(
+    println!("{}",
         r" 
          /`-._
         /_,.._`:-    
@@ -24,7 +25,7 @@ fn print_banner() {
    : o ):';       _  |  
     `-._ `'__,.-''\`-.)
         `\\  \,.-'``
-        "
+        ".bright_cyan().blink().bold()
     );
 }
 
