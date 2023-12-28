@@ -94,6 +94,14 @@ impl VpnDevice {
 
         loop {
             let (nbytes, peer_addr) = self.socket.recv_from(&mut buf[..])?;
+            println!("BYTES: {:?}", buf);
+
+            match String::from_utf8(buf.to_vec()) {
+                Ok(value) => {
+                    println!("BYTES AS STRING: {}", value);
+                }
+                Err(_) => {}
+            }
 
             if let SocketAddr::V4(peer_addr_v4) = peer_addr {
                 println!("Peer connected with address {}", peer_addr_v4);
