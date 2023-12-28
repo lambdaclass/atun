@@ -69,10 +69,13 @@ impl VpnDevice {
 
             let nbytes = self.interface.read(&mut buf[..])?;
             println!("BYTES: {:?}", buf);
-            println!(
-                "BYTES AS STRING: {}",
-                String::from_utf8(buf.to_vec()).unwrap()
-            );
+
+            match String::from_utf8(buf.to_vec()) {
+                Ok(value) => {
+                    println!("BYTES AS STRING: {}", value);
+                }
+                Err(_) => {}
+            }
 
             //let peer = &self.peer.endpoint();
 
