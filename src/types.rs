@@ -32,7 +32,6 @@ impl Peer {
 /// A representation of a VPN interface
 pub struct VpnDevice {
     socket: UdpSocket,
-    /// tun device
     interface_reader: RwLock<Reader>,
     interface_writer: RwLock<Writer>,
     peer: Peer,
