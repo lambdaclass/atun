@@ -1,7 +1,7 @@
 # atun
 A toy VPN implemented in Rust based on https://write.yiransheng.com/vpn
 
-# Instructions MacOS
+# Instructions for running a virtual docker network - MacOS
 ```
 make build
 docker-compose up
